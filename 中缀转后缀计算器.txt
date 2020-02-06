@@ -1,0 +1,162 @@
+/*
+***日期：2019-3-2
+***制作:伊一易水寒
+中缀表达式转后缀表达式的计算器模板(纯C语言)：
+步骤：1、将中缀表达式转换为后缀表达式(依赖栈)
+	  2、提取操作数逐个运算(依赖栈)
+支持功能:+、-、*、/以及括号运算
+缺陷：1、不支持大数
+2、不支持负数运算
+3、交互不友好(需手动输入空格)
+4、代码冗长，不利于理解。
+错误：1 + 3 + 3 * ( 5 + 1 )
+*/
+
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+typedef enum { num, opr, end } Type;
+struct stack1 {
+	double a[100];
+	int top;
+};
+typedef struct stack1 *  Stack1;
+Stack1 create1() {//顺序栈基本操作
+	Stack1 s1;
+	s1 = (Stack1)malloc(sizeof(struct stack1));
+	s1->top = -1;
+	return s1;
+}
+void Push1(Stack1 s1, double x) {
+	s1->a[++(s1->top)] = x;
+}
+double Pop1(Stack1 s1) {
+	double data;
+	data = s1->a[s1->top];
+	s1->top--;
+	return data;
+}
+bool IsEmpty(Stack1 s1) {
+	if (s1->top == -1)return 1;
+	return 0;
+}
+int Getop(char Expr[], int *start, char str[]) {  //传递每一个操作数类型及str
+	int i = 0;
+	while ((str[0] = Expr[(*start)++]) == ' ');
+	while (str[i] != ' '&&str[i] != '\0') {//把数和运算符后的空格也读进去，再换成'\0'
+		str[++i] = Expr[(*start)++];
+	}
+	str[i] = '\0';
+	if (i == 0)return end;
+	else if (str[0] <= '9'&&str[0] >= '0' || str[1] <= '9'&&str[1] >= '0')//考虑有符号数
+		return num;
+	else return opr;
+}
+double Calculate(char Expr[]) {
+	Stack1 s1;
+	double op1, op2;
+	int start = 0;		//当前扫描到哪个操作数的索引
+	char str[1000];
+	int T;				//标记当前操作数类型
+	s1 = create1();		//注：要在该函数内建栈
+	while ((T = Getop(Expr, &start, str)) != end) {
+		if (T == num) {
+			Push1(s1, atof(str));
+		}
+		else {
+			if (!IsEmpty(s1))op1 = Pop1(s1);
+			if (!IsEmpty(s1))op2 = Pop1(s1);
+			switch (str[0]) {
+			case'+':Push1(s1, op1 + op2);break;
+			case'-':Push1(s1, op2 - op1);break;
+			case'*':Push1(s1, op1 * op2);break;
+			case'/':Push1(s1, op2 / op1);break;
+			}
+		}
+	}
+	return s1->a[0];
+}
+struct stack2 {
+	char opr[100];
+	int top;
+};
+struct stack2* create2() {
+	struct stack2 *s2;
+	s2 = (struct stack2*)malloc(sizeof(struct stack2));
+	s2->top = -1;
+	return s2;
+}
+void Push2(struct stack2* s2, char c) {
+	s2->opr[++s2->top] = c;
+}
+char Pop2(struct stack2 *s2) {
+	char c;
+	c = s2->opr[s2->top];
+	s2->top--;
+	return c;
+}
+void Transform(char Expr[]) {
+	struct stack2 *s2;
+	char temp[100], c;
+	s2 = create2();
+	int i, j, k = 0, na;
+	na = strlen(Expr);
+	for (i = 0;i < na;i++) {
+		if (Expr[i] == ' ')continue;//空格不做任何处理
+		else if (Expr[i] <= '9' && Expr[i] >= '0') {	//将数据输出
+			while (Expr[i] != ' '&&Expr[i] != '\0') {
+				temp[k++] = Expr[i++];
+			}
+			temp[k++] = ' ';
+		}
+		else if (Expr[i] == '(')Push2(s2, Expr[i]);//左括号：压入栈中
+		else if (Expr[i] == ')') {				//右括号：将栈顶元素依次弹出直至左括号
+			while (s2->opr[s2->top] != '(') {
+				temp[k++] = Pop2(s2);
+				temp[k++] = ' ';
+			}
+			s2->top--;
+		}
+		else {
+			if (Expr[i] == '+' || Expr[i] == '-') {	//运算符：依次弹出栈顶元素直至该元素优先级大于栈顶元素(类似于单调增栈)
+				while (s2->opr[s2->top] != '('&&s2->top >= 0) {
+					temp[k++] = Pop2(s2);
+					temp[k++] = ' ';
+				}
+				Push2(s2, Expr[i]);
+			}
+			else {
+				while (s2->opr[s2->top] != '('&&s2->top >= 0 && (s2->opr[s2->top] == '*' || s2->opr[s2->top] == '/')) {
+					temp[k++] = Pop2(s2);
+					temp[k++] = ' ';
+				}
+				Push2(s2, Expr[i]);
+			}
+		}
+	}
+	while (s2->top >= 0) {	//将剩余元素依次弹出
+		temp[k++] = s2->opr[s2->top];
+		s2->top--;
+	}
+	temp[k] = '\0';		//不可落下，与计算函数衔接
+	for (j = 0;j < k;j++) {
+		Expr[j] = temp[j];
+	}
+}
+int main()
+{
+	int i, j, k, na;
+	double result;
+	char Expr[1000];
+	while (fgets(Expr, 1000, stdin)) {
+		na = strlen(Expr);
+		Expr[na - 1] = '\0';
+		Transform(Expr);
+		result = Calculate(Expr);
+		printf("%.3lf\n", result);
+	}
+	return 0;
+}

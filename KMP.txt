@@ -1,0 +1,49 @@
+//杭电OJ2087
+#include<stdio.h>
+#include<string.h>
+int next[1010],n,m;
+char a[1010], b[1010];
+void getnext(int m) {
+	int i, j, k;
+	next[0] = -1;
+	for (i = 1;i < m;i++) {
+		j = next[i - 1];//j代表前i-1个数的最大后缀
+		while (b[j + 1] != b[i] && j >= 0)
+			j = next[j];//如果i不能直接接在最大后缀后面,则后退一个匹配单位
+		if (b[j + 1] == b[i])//如果能找到一个匹配
+			next[i] = j+ 1;
+		else next[j] = -1;//无匹配，即J==0
+	}
+}
+int main()
+{
+	int i, j, k,sum;
+	while (scanf("%s", a) && a[0] != '#') {
+		scanf("%s", b);
+		sum = 0;
+		n = strlen(a);
+		m = strlen(b);
+		getnext(m);
+		i = 0;j = 0;
+		while (i < n) {
+			if (a[i] == b[j]) {//若能匹配
+				i++;
+				j++;
+				if (m == j) {
+					sum++;
+					j = 0;
+				}
+			}
+			else {
+				if (j == 0) {//若为第一个数，因为j-1超数组下标
+					i++;
+				}
+				else {
+					j = next[j - 1] + 1;//迁移至最近的相同后缀
+				}
+			}
+		}
+		printf("%d\n", sum);
+	}
+	return 0;
+}

@@ -1,0 +1,16 @@
+BT* PreAndIn(char *pre, char *in, int sublen) {
+	if (sublen == 0) {
+		return 0;
+	}
+	BT*temp = (BT*)malloc(sizeof(BT));
+	if (temp == 0)printf("ÉêÇëÄÚ´æÊ§°Ü\n");
+	temp->data= *pre;
+	int index;
+	for (index = 0;index < sublen;index++) {
+		if (*pre == in[index])
+			break;
+	}
+	temp->left = PreAndIn(pre+1, in, index);
+	temp->right = PreAndIn(pre + index + 1, in + index + 1, sublen - (index + 1));
+	return temp;
+}

@@ -1,0 +1,19 @@
+vector：
+vector实际上是一种动态数组，可以自动按照需求调整数组大小。
+常见时间复杂度：1.随机访问O（N）2.容器尾部插入元素O（1）3.容器任意位置插入元素O（N）
+可定义类型：int,float,double,结构体，string(输出字符串类型两种方法：printf("%s",s.c_str()); cout<<s;
+vector的迭代器说明：
+任何改变vector长度（capacity)的操作都会使已经存在的迭代器失效
+一、插入元素
+1.vec.push_back(i):将元素插在末尾
+二、访问元素：
+1.直接通过vec[i]索引(前提是vec[i]必须存在）
+常见误区：
+{
+for(i=1;i<=n;i++)
+vec[i]=i;//错误,vec[i]此时不存在
+}
+2.vec.at(i);
+3.vec.front()访问首元素O（1）等价于*vec.begin()
+4.vec.back()访问尾部元素O（1）不等价于*vec.end(),因为.end()指向的是末尾元素的后一个位置
+三、删除元素

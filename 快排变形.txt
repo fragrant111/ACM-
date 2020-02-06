@@ -1,0 +1,39 @@
+/*****************************
+程序功能：在同一数组中将奇数全部放在偶数后面
+快排方法：指针交换法
+******************************/
+#include<stdio.h>
+int a[100];
+void quickpass(int n,int left,int right) {
+	if (left >= right)return;
+	int i, j, k,t,temp;
+	i = left;
+	j = right;
+	t = a[left];
+	while (i!=j) {
+		while (i<j&&a[j] % 2 == 0)j--;
+		while (i<j&&a[i] % 2 == 1)i++;
+		if (i < j) {
+			temp = a[i];
+			a[i] = a[j];
+			a[j] = temp;
+		}
+	}
+	a[left] = a[i];
+	a[i] = t;
+	quickpass(n, left, i-1);
+	quickpass(n, i+1, right);
+}
+int main()
+{
+	int n, i, j, k;
+	scanf("%d", &n);
+	for (i = 0;i < n;i++) {
+		scanf("%d", &a[i]);
+	}
+	quickpass(n, 0, n - 1);
+	for (i = 0;i < n;i++) {
+		printf("%d ", a[i]);
+	}
+	return 0;
+}

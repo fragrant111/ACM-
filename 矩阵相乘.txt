@@ -1,0 +1,32 @@
+#include<stdio.h>
+int e1[100][100], e2[100][100],e3[100][100];
+int main()
+{
+	int i, j, k, n1, m1, n2, m2;
+	scanf("%d%d", &n1, &m1);
+	for (i = 0;i < n1;i++) {
+		for (j = 0;j < m1;j++) {
+			scanf("%d", &e1[i][j]);
+		}
+	}
+	scanf("%d%d", &n2, &m2);
+	for (i = 0;i < n2;i++) {
+		for (j = 0;j < m2;j++) {
+			scanf("%d", e2[i][j]);
+		}
+	}
+	//矩阵相乘代码
+	for (i = 0;i < n1;i++) {//注意循环终止条件
+		for (j = 0;j < m2;j++) {
+			for (k = 0;k < m1;k++) {
+				e3[i][j] += e1[i][k] * e2[k][j];
+			}
+		}
+	}
+	//打印输出
+	for (i = 0;i < n1;i++) {
+		for (j = 0;j < m2;j++)
+			printf("%d ", e3[i][j]);
+		printf("\n");
+	}
+}

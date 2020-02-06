@@ -1,0 +1,53 @@
+//×îĞ¡¶ÑÄ£°å
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct node *Heap;
+typedef int Element;
+struct node {
+	Element *data;
+	int size;
+	int Capacity;
+};
+typedef Heap MinHeap;
+MinHeap InitHeap(int maxsize) {
+	MinHeap H;
+	H = (Heap)malloc(sizeof(struct node));
+	H->data = (Element*)malloc(sizeof(Element)*(maxsize + 1));
+	H->Capacity = maxsize;
+	H->size = 0;
+	H->data[0] =-1000;
+	return H;
+}
+void Insert(MinHeap H, int data1) {
+	int i,x;
+	i = ++H->size;
+	for (;H->data[i/2] > data1;i /= 2) {
+		H->data[i] = H->data[i / 2];
+	}
+	H->data[i] = data1;
+}
+Element Print(MinHeap H) {
+	int i, result,parent,child;
+	result = H->data[1];
+	int x = H->data[H->size--];
+	for (parent = 1;2 * parent <= H->size;parent = child) {
+		child = 2 * parent;
+		if (child + 1 <= H->size&&H->data[child + 1] < H->data[child])
+			child++;
+		if (x < H->data[child])break;
+		else {
+			H->data[parent] = H->data[child];
+		}
+	}
+	H->data[parent] = x;
+	return result;
+}
+int main() {
+	MinHeap H;
+	H=InitHeap(10);
+	Insert(H, 11);
+	Insert(H, 9);
+	printf("%d\n", Print(H));
+	printf("%d\n", Print(H));
+
+}

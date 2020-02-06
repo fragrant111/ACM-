@@ -1,0 +1,19 @@
+素数打表（埃筛）：O(nloglogn)
+for(i=2;i<=n;i++){
+	if(isnotprime[i]==0)//如i=4，4的倍数已经被2筛选过了,所以不用再次筛选
+    for(j=i*i(或者i+i);j<=n;j+=i){
+	a[j]=1;
+}
+欧式筛选法：O（n）
+for(i=2;i<=n;i++){
+	if(isnotprime[i]==0)prime[num++]=i;
+	for(j=0;i*prime[j]<n&&j<=num;j++){
+		isnotprime[i*prime[j]]=1;
+		if(i%prime[j]==0)break;
+			}
+		}
+数论原理：
+背景：任何合数都可以分解为一系列质因数
+每个非素数都只被它的最小质因数筛掉
+
+

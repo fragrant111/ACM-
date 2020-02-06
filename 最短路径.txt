@@ -1,0 +1,125 @@
+//Floyd算法
+#include<stdio.h>
+int e[51][51];
+#define INF 0x3f3f3f3f
+int main()
+{
+	int i, j, k, n, m, a, b, c;
+	scanf("%d%d", &n, &m);
+	for (i = 1;i <= n;i++) {
+		for (j = 1;j <= n;j++) {
+			if (i == j)e[i][j] = 0;
+			else e[i][j] = INF;
+		}
+	}
+	for (i = 1;i <= m;i++) {
+		scanf("%d%d%d", &a, &b, &c);
+		e[a][b] = c;
+	}
+	for (k = 1;k <= n;k++) {
+		for (i = 1;i <= n;i++) {
+			for (j = 1;j <= n;j++) {
+				if (e[i][j] > e[i][k] + e[k][j]) {
+					e[i][j] = e[i][k] + e[k][j];
+				}
+			}
+		}
+	}
+}
+//Dijkstra
+#include<stdio.h>
+#include<string.h>
+#define INF 0x3f3f3f3f
+int e[51][51], dis[51], book[51], n, m;
+void Dijkstra() {
+	int i, j, k, u;
+	for (i = 1;i <= n - 1;i++) {
+		int min = INF;
+		for (j = 1;j <= n;j++) {
+			if (book[j] == 0 && min > dis[j]) {
+				min = dis[j];
+				u = j;
+			}
+		}
+		book[u] = 1;
+		for (k = 1;k <= n;k++) {
+			if (dis[k] > dis[u] + e[u][k])
+				dis[k] = dis[u] + e[u][k];
+		}
+	}
+}
+int main()
+{
+	int i, j, k, a, b, c;
+	scanf("%d%d", &n, &m);
+	for (i = 1;i <= n;i++) {
+		for (j = 1;j <= n;j++) {
+			if (i == j)e[i][j] = 0;
+			else e[i][j] = INF;
+		}
+	}
+	for (i = 1;i <= m;i++) {
+		scanf("%d%d%d", &a, &b, &c);
+		e[a][b] = c;
+	}
+	for (i = 1;i <= n;i++) {
+		dis[i] = e[1][i];
+	}
+	book[1] = 1;
+	Dijkstra();
+}
+//Bellman-Ford
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
+#include<iostream>
+using namespace std;
+struct node {
+	int u, v, w;
+}q[110];
+int m, n, dis[110];
+bool cmp(struct node a, struct node b) {
+	return a.w < b.w;
+}
+int main()
+{
+	int i, j, k;
+	scanf("%d%d", &n, &m);
+	for (i = 1;i <= m;i++) {
+		scanf("%d%d%d", &q[i].u, &q[i].v, &q[i].w);
+	}
+	sort(q + 1, q + 1 + n, cmp);
+	dis[1] = 0;
+	for (i = 1;i <= n - 1;i++) {
+		for (j = 1;j <= m;j++) {
+			if (dis[q[j].v] > dis[q[j].u] + q[j].w)//松弛
+				dis[q[j].v] = dis[q[j].u] + q[j].w;
+		}
+	}
+}
+//Spfa算法（判环：有一个点入队次数大于等于n)
+int u[110], v[110], w[110], dis[110];
+int q[1100],first[110],next[110],book[110];
+void Spfa() {
+	int i, j, k, head, tail;
+	head = tail = 0;
+	q[head] = 1;
+	book[1] = 1;
+	tail++;
+	while (head < tail) {
+		k = first[q[head]];
+		while (k != -1) {
+			if (dis[v[k]] > dis[u[k]] + w[k]) {
+				dis[v[k]] = dis[u[k]] + w[k];
+				if (book[v[k]] == 0) {
+					book[v[k]] = 1;
+					q[tail] = v[k];
+					tail++;
+				}
+			}
+			k = next[k];
+		}
+		book[q[head]] = 0;
+		head++;
+	}
+}

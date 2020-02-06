@@ -1,0 +1,24 @@
+//单调队列
+void Subsequence(int a[], int k,int len) {
+	int i, j,tail, head, q[100], t[100];
+	head = -1;tail =-1;//这里从1开始(指针head不存放元素，指针tail存放元素)
+	for (i =0;i < len;i++) {
+		while (head<tail&&a[i]>q[tail])
+			tail--;
+		q[++tail] = a[i];
+		t[tail] = i;
+		if (i - k >= t[head + 1])head++;
+		if (i >= k-1)
+			printf("%d ", q[head+1]);
+	}
+	printf("\n");
+}
+//单调栈
+void SubStack(int a[],int len){
+	int i, j, k, top = -1,s[100];
+	for (i = 0;i < len;i++) {
+		while (top >= 0 && a[i] > s[top])
+			top--;
+		s[++top] = a[i];
+	}
+}

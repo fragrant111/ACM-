@@ -1,0 +1,37 @@
+#include<iostream>
+#include<algorithm>
+#include<string>
+#include<map>
+#include<string.h>
+#include<stdio.h>
+#include<locale>
+#include<vector>
+const int MAXN 26;
+using namespace std;
+struct node {
+    struct node *a[MAXN];
+    node(){
+        for(size_t i;i<MAXN;i++){a[i]=NULL;}
+    }
+};
+struct node *root;
+void insert(char *s){
+    int i,ns,alpha;
+    ns=strlen(s);
+    struct node *now=root;
+    for(i=0;i<ns;i++){
+        alpha=s[i]-'a';
+        if(now->a[alpha]==NULL)now->a[alpha]=new node();
+        now=now->a[alpha];
+    }
+}
+int find(char *s){
+    int i,ns,alpha;
+    ns=strlen(s);
+    struct node * now=root;
+    for(i=0;i<ns;i++){
+        alpha=s[i]-'a';
+        if(now->a[alpha]==NULL)return 0;
+    }
+    return 1;
+}
